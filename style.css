@@ -13,6 +13,10 @@ body {
   font-size: 16px;
   max-height: 300px;
 }
+button {
+  cursor: pointer;
+  outline: none !important;
+}
 
 h1 {
   font-weight: normal;
@@ -23,13 +27,42 @@ h1 {
 }
 
 .result .table {
-
+  padding-top: 10px;
+  margin-bottom: 40px;
 }
 
 .result .table .tr {
   display: flex;
   text-align: left;
   flex-wrap: wrap;
+  position: relative;
+}
+
+.show-dictionary {
+  position: absolute;
+  left: -5px;
+  transform: translateX(-100%);
+  top: 13px;
+  padding: 0;
+  border: 10px solid transparent;
+  border-top-color: #40ff05;
+  background-color: transparent;
+}
+
+.delete-word {
+  background-color: transparent;
+  position: absolute;
+  right: 0;
+  top: 7px;
+  transform:  translateX(100%);
+  margin-right: -5px;
+  color: #bf0000;
+  font-size: 20px;
+  border: 0;
+}
+
+.show-dictionary:hover {
+  border-top-color: #fff;
 }
 
 .result .td {
@@ -40,6 +73,10 @@ h1 {
 
 .result .dictionary {
   flex: 1 1 100%;
+  display: none;
+}
+
+.result .dictionary.showed {
   display: flex;
 }
 
@@ -51,4 +88,41 @@ h1 {
 }
 .result .dictionary div:first-child {
   flex: 1 1 30%;
+}
+
+/* ------------------- SPINNER --------------------- */
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 51px;
+  height: 51px;
+  margin: 6px;
+  border: 6px solid #40ff05;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #40ff05 transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

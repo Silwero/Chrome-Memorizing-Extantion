@@ -27,6 +27,9 @@ $(function() {
 
   /* DETECT SELECTED TEXT END SHOW BTN */
   $('body').on('mouseup', (e) => {
+    if ($(e.target).closest('.memorizing-popup').length || $(e.target).hasClass('.memorizing-popup')) {
+      return;
+    }
     let select = '';
     select = document.getSelection();
     let word = select.toString();
@@ -80,7 +83,7 @@ $(function() {
 
     const xhr = new XMLHttpRequest();
 
-    xhr.open('POST', 'https://memorizing-f0cb4.firebaseio.com/words.json', true);
+    xhr.open('POST', 'https://memorizing-bc6a4.firebaseio.com/words.json', true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify(translate));
 
@@ -123,15 +126,29 @@ $(function() {
 
     const popup = $('<div class="memorizing-popup"></div>');
     const header = $('<h1>').text(text.header);
-    const btn = $('<button>' + text.btnText + '</button>');
+    const btn = $('<button class="save-btn">' + text.btnText + '</button>');
+
+
+    popup.append(createClosePopupBtn());
 
     btn.on('click', e => {
       saveTranslate(translate);
     });
 
     const translateTable = $('<table class="result"></table>');
+    let lang = '';
+    switch(translate.src) {
+      case 'ru':
+        lang = 'Russian';
+        break;
+      case 'en':
+        lang = 'English';
+        break;
+      default:
+        lang = translate.src;
+    }
     translateTable.append('<tr>' +
-        '<th> Source language ' + translate.src + '</th>'
+        '<th colspan="2"> Source language ' + lang + '</th>'
      +'</tr>');
     translateTable.append('<tr>' +
         '<td>' + translate.sentences[0].orig + '</td>' +
@@ -141,6 +158,7 @@ $(function() {
     let dictTable = null;
     if (translate.dict) {
       dictTable = $('<table class="dict-table"></table>');
+      dictTable.append('<tr><th colspan="2">Other variants</th></tr>')
       translate.dict.forEach((el) => {
         dictTable.append('<tr>'+
             '<td>' + el.pos +'</td>' +
@@ -156,6 +174,14 @@ $(function() {
     popup.append(btn);
 
     $('body').append(popup);
+  }
+
+  function createClosePopupBtn() {
+    let btn = $('<button class="close">X</button>');
+    btn.on('click', () => {
+      clearMemorizingElements();
+    });
+    return btn;
   }
 
   /* DELETE UI */
