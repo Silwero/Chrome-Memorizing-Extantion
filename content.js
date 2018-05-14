@@ -10,6 +10,11 @@ $(function() {
 // DELETE UI
 /*----------------------------------------------------------------------------------- */
 
+/*---------------------------------RQUESTS--------------------------------------- */
+// GET TRANSLATE FROM GOOGLE
+// SAVE TRANSLATE TO FIREBASE
+/*----------------------------------------------------------------------------------- */
+
 
 /*---------------------------------------- EVENTS --------------------------------- */
   /* CLEAR APP UI ON CLICK OUT */
@@ -44,7 +49,9 @@ $(function() {
 
 
 
-  /*---------------------------------------- REQUESTS --------------------------------- */
+/*---------------------------------------- REQUESTS --------------------------------- */
+
+  /* GET TRANSLATE FROM GOOGLE */
   function getTranslate(text) {
     // START SPINNER
     $('.memorizing-popup-btn button').attr('disabled', true);
@@ -68,8 +75,27 @@ $(function() {
     }
   }
 
+  /* SAVE TRANSLATE TO FIREBASE */
+  function saveTranslate(translate) {
 
-  /*---------------------------------------- CLEAR UI --------------------------------- */
+    const xhr = new XMLHttpRequest();
+
+    xhr.open('POST', 'https://memorizing-f0cb4.firebaseio.com/words.json', true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(JSON.stringify(translate));
+
+    xhr.onreadystatechange = function() {
+      if (this.readyState != 4) return;
+      if (this.status != 200) {
+        console.log(this.status + ': ' + this.statusText);
+        return;
+      }
+
+      alert('saved');
+    }
+  }
+
+/*---------------------------------------- CREATE UI --------------------------------- */
 
   /* CREATE BTN */
   function createBtn(left, top) {
@@ -92,12 +118,16 @@ $(function() {
 
     const text = {
       header: 'Translate',
+      btnText: 'Save translate'
     }
-
-    console.log(translate);
 
     const popup = $('<div class="memorizing-popup"></div>');
     const header = $('<h1>').text(text.header);
+    const btn = $('<button>' + text.btnText + '</button>');
+
+    btn.on('click', e => {
+      saveTranslate(translate);
+    });
 
     const translateTable = $('<table class="result"></table>');
     translateTable.append('<tr>' +
@@ -112,7 +142,7 @@ $(function() {
     if (translate.dict) {
       dictTable = $('<table class="dict-table"></table>');
       translate.dict.forEach((el) => {
-        dictTable.append('tr'+
+        dictTable.append('<tr>'+
             '<td>' + el.pos +'</td>' +
             '<td>' + el.terms.join(', ') +'</td>' +
           +'</tr>');
@@ -123,6 +153,7 @@ $(function() {
     popup.append(header);
     popup.append(translateTable);
     popup.append(dictTable);
+    popup.append(btn);
 
     $('body').append(popup);
   }

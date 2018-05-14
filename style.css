@@ -22,120 +22,33 @@ h1 {
   margin-top: 0;
 }
 
-/* Search styles */
-.search {
-  padding: 20px 0;
+.result .table {
+
 }
 
-::placeholder {
-  color: #fff;
-  opacity: 1;
-}
-
-:focus::placeholder {
-  opacity: 0;
-}
-
-.search input[type="text"] {
-  width: 100%;
-  border-radius: 0;
-  border: 1px solid #fff;
-  background: rgba(255,255,255,.3);
-  font-size: 16px;
-  padding: 10px 20px;
-  border-radius: 7px;
-  outline: none;
-  color: #fff;
-  transition: all .3s;
-}
-
-.search input[type="text"]:focus {
-  background-color: rgba(255,255,255,1);
-  color: #000;
-}
-
-/* Output styles */
-
-#output {
-  margin-bottom: 30px;
-}
-
-.list-item-header {
-  background: #fff;
-  color: #000;
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flex;
-  display: -o-flex;
+.result .table .tr {
   display: flex;
-}
-
-.list-item-header .result {
-  text-align: center;
-}
-
-.list-item-header .result:first-child {
-  border-right: 1px solid #000;
-}
-
-.list-item:nth-child(odd) {
-  background: rgba(255,255,255,.2);
-}
-
-.list-item {
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flex;
-  display: -o-flex;
-  display: flex;
-  border: 1px solid #fff;
-  border-top: 0;
-  position: relative;
-}
-
-.empty {
-  border:  1px solid #fff;
-  border-top: 0;
-  padding: 3px 0;
-  font-size: 14px;
-  font-style: italic;
-}
-
-.delete {
-  position: absolute;
-  right: -30px;
-  top: -1px;
-  bottom: -1px;
-  width: 30px;
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flex;
-  display: -o-flex;
-  display: flex;
-  -ms-align-items: center;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: #fff;
-  background: #f53737;
-  transform: scale(.5);
-  opacity: 0;
-  transition: all .3s;
-}
-
-.list-item:hover .delete,
-.delete:hover {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.result {
-  flex:  1 1 100%;
-  padding: 3px 5px;
   text-align: left;
+  flex-wrap: wrap;
 }
 
-.result:first-child {
-  border-right: 1px solid #fff;
+.result .td {
+  flex: 1 1 50%;
+  padding: 5px 15px;
+  border: 1px solid #fff;
 }
 
+.result .dictionary {
+  flex: 1 1 100%;
+  display: flex;
+}
+
+.result .dictionary div {
+  flex: 1 1 70%;
+  padding: 5px 15px;
+  background: rgba(255,255,255,.2);
+  border: 1px solid #fff;
+}
+.result .dictionary div:first-child {
+  flex: 1 1 30%;
+}
