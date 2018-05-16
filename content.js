@@ -15,6 +15,8 @@ $(function() {
 // SAVE TRANSLATE TO FIREBASE
 /*----------------------------------------------------------------------------------- */
 
+let translate = {};
+
 
 /*---------------------------------------- EVENTS --------------------------------- */
   /* CLEAR APP UI ON CLICK OUT */
@@ -50,18 +52,26 @@ $(function() {
     }
   });
 
+  $('body').on('click', '.change-translation', (e) => {
+    const newVal = $(e.target).text();
+    $('.current-translate').text(newVal);
+    translate.sentences[0].trans = newVal;
+    console.log(translate);
+  });
+
 
 
 /*---------------------------------------- REQUESTS --------------------------------- */
 
   /* GET TRANSLATE FROM GOOGLE */
-  function getTranslate(text) {
+  function getTranslate(text, lang = 'auto') {
     // START SPINNER
+    const lang2 = lang === 'ru' ? 'en' : 'ru';
     $('.memorizing-popup-btn button').attr('disabled', true);
 
 
     // REQUEST
-    let request = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=ru&hl=ru&dt=t&dt=bd&dj=1&q=' + text;
+    let request = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=' + lang + '&tl=' + lang2 + '&hl=ru&dt=t&dt=bd&dj=1&q=' + text;
 
     const xhr = new XMLHttpRequest();
     xhr.open('GET', request, true);
@@ -73,13 +83,14 @@ $(function() {
         console.log(xhr.status + ': ' + xhr.statusText);
         alert(xhr.status + ': ' + xhr.statusText);
       } else {
-        createPopup(JSON.parse(xhr.responseText));
+        translate = JSON.parse(xhr.responseText);
+        createPopup();
       }
     }
   }
 
   /* SAVE TRANSLATE TO FIREBASE */
-  function saveTranslate(translate) {
+  function saveTranslate() {
 
     const xhr = new XMLHttpRequest();
 
@@ -94,6 +105,9 @@ $(function() {
         return;
       }
 
+      chrome.runtime.sendMessage({
+        msg: 'WORD_SAVED'
+      });
       alert('saved');
     }
   }
@@ -115,7 +129,7 @@ $(function() {
   }
 
   /* CREATE POPUP */
-  function createPopup(translate) {
+  function createPopup() {
     // remove btn
     clearMemorizingElements();
 
@@ -132,7 +146,7 @@ $(function() {
     popup.append(createClosePopupBtn());
 
     btn.on('click', e => {
-      saveTranslate(translate);
+      saveTranslate();
     });
 
     const translateTable = $('<table class="result"></table>');
@@ -147,28 +161,39 @@ $(function() {
       default:
         lang = translate.src;
     }
+    const select = $('<select class="lang-select">' +
+        '<option value="auto">Auto</option>' +
+        '<option value="ru">Russian</option>' +
+        '<option value="en">English</option>' +
+      '</select>');
+    select.on('change', function() {
+      getTranslate(translate.sentences[0].orig, $(this).val());
+    });
     translateTable.append('<tr>' +
-        '<th colspan="2"> Source language ' + lang + '</th>'
-     +'</tr>');
+        '<th colspan="2"> Source language ' + lang +'</tr>');
     translateTable.append('<tr>' +
         '<td>' + translate.sentences[0].orig + '</td>' +
-        '<td>' + translate.sentences[0].trans + '</td>' +
+        '<td class="current-translate">' + translate.sentences[0].trans + '</td>' +
      +'</tr>');
 
     let dictTable = null;
     if (translate.dict) {
       dictTable = $('<table class="dict-table"></table>');
-      dictTable.append('<tr><th colspan="2">Other variants</th></tr>')
-      translate.dict.forEach((el) => {
+      dictTable.append('<tr><th colspan="2">Other variants</th></tr>');
+      translate.dict.forEach((el, dictNum) => {
+        let dict = el.terms.map((el, arrNum) => {
+          return '<span data-arr-number="' + arrNum + '" data-dict-number="' + dictNum + '" class="change-translation">' + el + '</span>';
+        });
         dictTable.append('<tr>'+
             '<td>' + el.pos +'</td>' +
-            '<td>' + el.terms.join(', ') +'</td>' +
+            '<td>' + dict.join(', ') +'</td>' +
           +'</tr>');
       });
     }
 
 
     popup.append(header);
+    popup.append(select);
     popup.append(translateTable);
     popup.append(dictTable);
     popup.append(btn);

@@ -123,3 +123,15 @@
 .memorizing-popup::-webkit-scrollbar-thumb {
   background-color: #40ff05;
 }
+
+.lang-select {
+  margin-bottom: 30px;
+}
+
+.change-translation {
+  cursor: pointer;
+}
+
+.change-translation:hover {
+  text-decoration: underline;
+}

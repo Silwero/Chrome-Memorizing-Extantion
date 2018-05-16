@@ -76,9 +76,6 @@ $(function() {
 
 /*--------------------DELETE WORD------------------------*/
   function deleteWord(target) {
-
-
-
     $.ajax({
       type: 'DELETE',
       url: 'https://memorizing-bc6a4.firebaseio.com/words/' + target + '.json',

@@ -1,5 +1,11 @@
 getTranslations();
 
+chrome.runtime.onMessage.addListener((request) => {
+  if (request.msg === 'WORD_SAVED') {
+    getTranslations();
+  }
+});
+
 function getTranslations() {
   const xhr = new XMLHttpRequest();
 
