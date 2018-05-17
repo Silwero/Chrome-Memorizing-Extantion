@@ -8,6 +8,23 @@ $(function() {
 /*--------------------CREATE RESULT TABLE------------------------*/
 // Create structure of results
 /*------------------------------------------------------------*/
+  let settings = {
+    isAuth: false
+  }
+  let updateTimer;
+
+  // start updating timer
+  getSettings(() => {
+    updateTimer = setInterval(() => {
+      getSettings();
+    }, 3000);
+  });
+
+  // stop updating timer
+  $(window).on('beforeunload ', () => {
+    clearInterval(updateTimer);
+  });
+
   const spinner = $('<div class="lds-ring"><div></div><div></div><div></div><div></div></div>');
   $('body').on('click', (e) => {
 
@@ -88,5 +105,18 @@ $(function() {
         });
       }
     })
+  }
+
+/*------------------------------- MESSAGING ---------------------------------*/
+  function getSettings(callback) {
+    chrome.runtime.sendMessage({
+      msg: 'SETTINGS_REQUEST'
+    }, resp => {
+      settings = {...resp};
+      console.log(resp);
+      if (callback) {
+        callback();
+      }
+    });
   }
 });
