@@ -19,11 +19,16 @@ button {
 }
 
 h1 {
-  font-weight: normal;
-  font-size: 28px;
-  color: #000;
-  text-shadow: 1px 1px #40ff05, -1px 1px #40ff05, -1px -1px #40ff05, 1px -1px #40ff05;
-  margin-top: 0;
+  margin: 0;
+}
+
+h2, h3, h4, h5, h6 {
+  margin: 0 0 20px;
+}
+
+h1 img {
+  display: block;
+  margin: 0 auto;
 }
 
 .result .table {
@@ -65,6 +70,18 @@ h1 {
   border-top-color: #fff;
 }
 
+.result {
+  padding-top: 40px;
+}
+
+.tab {
+  display: none;
+}
+
+.active-tab {
+  display: block;
+}
+
 .result .td {
   flex: 1 1 50%;
   padding: 5px 15px;
@@ -86,8 +103,149 @@ h1 {
   background: rgba(255,255,255,.2);
   border: 1px solid #fff;
 }
+
 .result .dictionary div:first-child {
   flex: 1 0 50%;
+}
+
+.navigation {
+  border-bottom: 1px solid #40ff05;
+  position: relative;
+}
+
+.navigation ul {
+  padding: 0;
+  margin: 0 0 20px;
+  list-style: none;
+  display: flex;
+}
+
+.navigation li {
+  flex: 1 1 100%;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  transition: all .3s;
+}
+
+.navigation li:hover,
+.navigation li.active {
+  color: #000;
+  text-shadow: 1px 1px #40ff05, -1px 1px #40ff05, -1px -1px #40ff05, 1px -1px #40ff05;
+}
+
+.navigation li.active {
+  cursor: default;
+}
+
+/* ------------------- AUTH --------------------- */
+.auth-form {
+  padding-top: 40px;
+  position: relative;
+}
+
+.auth-form input:disabled,
+.auth-form .btn:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.auth-form form {
+  max-width: 360px;
+  margin: 0 auto 60px;
+}
+
+.auth-form .lds-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    transition: all 9999999s ease-in-out 0s;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  background: #000;
+  border: 1px solid #40ff05;
+  border-radius: 7px;
+  height: 40px;
+  font-size: 16px;
+  font-weight: normal;
+  color: #fff;
+  padding: 0 15px;
+  transition: all .3s;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+  outline: none;
+  border-style: dashed;
+}
+
+.form-item {
+  margin-bottom: 30px;
+}
+
+.form-item label {
+  margin-bottom: 10px;
+  display: block;
+  text-align: left;
+}
+
+.btn {
+  background: #000;
+  border: 0;
+  color: #40ff05;
+  border-radius: 7px;
+  min-width: 150px;
+  height: 40px;
+  font-size: 16px;
+  font-weight: bold;
+  border: 1px solid #40ff05;
+  transition: all .3s;
+  margin-bottom: 30px;
+}
+
+.btn:hover {
+  background: #40ff05;
+  color: #000;
+}
+
+a {
+  color: #40ff05;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.message {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform: translateY(100%);
+  line-height: 22px;
+  padding: 3px 15px;
+  background: #40ff05;
+  color: #000;
+  text-align: center;
+  display: none;
+}
+
+.error {
+  background: #bf0000;
+  color: #fff;
 }
 
 /* ------------------- SPINNER --------------------- */
@@ -97,6 +255,7 @@ h1 {
   width: 64px;
   height: 64px;
 }
+
 .lds-ring div {
   box-sizing: border-box;
   display: block;
@@ -109,15 +268,19 @@ h1 {
   animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   border-color: #40ff05 transparent transparent transparent;
 }
+
 .lds-ring div:nth-child(1) {
   animation-delay: -0.45s;
 }
+
 .lds-ring div:nth-child(2) {
   animation-delay: -0.3s;
 }
+
 .lds-ring div:nth-child(3) {
   animation-delay: -0.15s;
 }
+
 @keyframes lds-ring {
   0% {
     transform: rotate(0deg);

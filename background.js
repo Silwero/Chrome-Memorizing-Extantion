@@ -1,9 +1,11 @@
 let settings = {
-  isAuth: true,
-  token: null
+  isAuth: false
 }
+checkAuth();
 
-getTranslations();
+if (settings.isAuth) {
+  getTranslations();
+}
 
 chrome.runtime.onMessage.addListener((request) => {
   if (request.msg === 'WORD_SAVED') {
@@ -34,12 +36,34 @@ function getTranslations() {
 
 function setStoreage(data) {
   chrome.storage.local.set({memorizing: data});
+  chrome.runtime.sendMessage({
+    msg: 'TRANSLATIONS_RECEIVED'
+  });
+}
+
+function checkAuth() {
+  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+
+  if (userInfo) {
+    settings.userInfo = {...userInfo}
+
+    if (settings.userInfo.idToken) {
+      settings.isAuth = true;
+    }
+  }
 }
 
 /* ---------------------------- MESSAGING ----------------------------*/
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.msg === 'SETTINGS_REQUEST') {
-    console.log('get request');
-    sendResponse(settings);
-  }
-});
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.msg === 'SETTINGS_REQUEST') {
+      if (request.data && request.data !== 'logout') {
+        settings.userInfo = request.data;
+        settings.isAuth = true;
+        getTranslations();
+      } else if (request.data && request.data === 'logout') {
+        delete settings.userInfo;
+        settings.isAuth = false;
+      }
+      sendResponse(settings);
+    }
+  });
