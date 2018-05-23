@@ -96,6 +96,7 @@ createShadowRoot();
 
     const xhr = new XMLHttpRequest();
 
+    translate.userId = settings.userInfo.localId;
     xhr.open('POST', 'https://memorizing-bc6a4.firebaseio.com/words.json', true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify(translate));
@@ -107,8 +108,6 @@ createShadowRoot();
         return;
       }
 
-      // @TODO not need to send message and then get from server. Need to try use response
-      // console.log(JSON.parse(xhr.responseText)); returns name: [firebase object name]
       chrome.runtime.sendMessage({
         msg: 'WORD_SAVED',
         name: JSON.parse(xhr.responseText).name,
@@ -152,10 +151,6 @@ createShadowRoot();
     getSettings(() => {
 
       // set timer to check login
-      updateTimer = setInterval(() => {
-        getSettings();
-      }, 3000);
-
       const text = {
         header: 'Translate',
         btnText: 'Save translate'
@@ -280,7 +275,7 @@ createShadowRoot();
       .result,.dict-table{width:100%;border-collapse:collapse}\
       .dict-table{margin:40px 0}\
       .result th,.dict-table th{text-align:center;background:#000;color:#40ff05;font-weight:400}\
-      .result td,.dict-table td,.result th,.dict-table th{border:1px solid #000;padding:5px 15px}\
+      .result td,.dict-table td,.result th,.dict-table th{vertical-align:top;border:1px solid #000;padding:5px 15px}\
       .dict-table td:first-child{background:rgba(0,0,0,.8);color:#40ff05}\
       .save-btn{border:0;text-align:center;padding:10px 20px;background:#000;color:#40ff05;border-radius:7px;max-width:150px;margin:20px auto 0;display:block;cursor:pointer}\
       .memorizing-popup::-webkit-scrollbar{width:5px}\
@@ -298,6 +293,7 @@ createShadowRoot();
     chrome.runtime.sendMessage({
       msg: 'SETTINGS_REQUEST'
     }, resp => {
+      console.log(resp);
       settings = {...resp};
       if (callback) {
         callback();

@@ -55,7 +55,6 @@ $(function() {
 
   function createResultTable(translationsList) {
     $('.result').empty();
-    console.log(translationsList);
 
     if (!translationsList || !Object.keys(translationsList).length) {
       $('.result').append('<p class="empty">No words!</p>');
@@ -180,11 +179,11 @@ $(function() {
 
   /* SEND AUTH REQUEST */
   function sendAuthRequest(isLogin) {
-    let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyCddGxrS9upsFCUTfqt_xoeXOINWa3Lfqc';
+    let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyAQGCNngi5zGARnGq1JXCD2GHrcuL8vVXA';
     let messageSuccess = 'Authorized!';
 
     if (isLogin) {
-      url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCddGxrS9upsFCUTfqt_xoeXOINWa3Lfqc';
+      url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyAQGCNngi5zGARnGq1JXCD2GHrcuL8vVXA';
     }
 
     let data = {
@@ -205,6 +204,7 @@ $(function() {
         $('.auth-form .lds-ring').remove();
         saveUser(result);
         setMessage(messageSuccess);
+        $('#login').val('');
       },
       error: (err) => {
         $('.auth-form input, .auth-form .btn').removeAttr('disabled');
@@ -220,6 +220,8 @@ $(function() {
 
     if (type === 'error') {
       messageBox.addClass('error');
+    } else {
+      messageBox.removeClass('error');
     }
 
     messageBox.text(message);
@@ -274,7 +276,7 @@ $(function() {
 
 /*------------------------- MESSAGING ---------------------------*/
   chrome.runtime.onMessage.addListener(req => {
-    if (req.msg === 'SETTINGS_REQUEST') {
+    if (req.msg === 'TRANSLATIONS_RECEIVED') {
       getTranslations();
     }
   });
