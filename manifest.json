@@ -3,16 +3,16 @@
   "name": "Memorizing ",
   "version": "1.0",
   "browser_action": {
-    "default_popup": "popup.html",
-    "default_icon": "icon.png"
+    "default_popup": "./popup/popup.html",
+    "default_icon": "./assets/images/icon.png"
   },
   "icons": {
-    "16": "icon.png",
-    "48": "icon.png",
-    "128": "icon.png"
+    "16": "./assets/images/icon.png",
+    "48": "./assets/images/icon.png",
+    "128": "./assets/images/icon.png"
   },
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["./background/background.js"]
   },
   "permissions": [
     "tabs",
@@ -21,7 +21,7 @@
   "content_scripts": [
     {
      "matches": ["<all_urls>"],
-     "js": ["jquery.js", "content.js"]
+     "js": ["./assets/js/jquery.js", "./content/content.js"]
     }
   ]
 }

@@ -111,19 +111,6 @@ $(function() {
     })
   }
 
-/*------------------------------- MESSAGING ---------------------------------*/
-  function getSettings(callback, data) {
-    chrome.runtime.sendMessage({
-      msg: 'SETTINGS_REQUEST',
-      data: data
-    }, resp => {
-      settings = resp;
-      if (callback) {
-        callback();
-      }
-    });
-  }
-
 /*------------------------------- CREATE NAV ---------------------------------*/
   /* CREATE NAVIGATION ITEMS */
   function createNav() {
@@ -262,6 +249,7 @@ $(function() {
     userInfo.expiresIn = new Date(new Date().getTime() + info.expiresIn * 1000);
     localStorage.setItem('userInfo', JSON.stringify(userInfo));
     getSettings(createNav, userInfo);
+    sendMessageLogin(userInfo);
   }
 
   /* LOGOUt */
@@ -271,6 +259,7 @@ $(function() {
       localStorage.removeItem('userInfo');
       chrome.storage.local.clear();
       getSettings(createNav, 'logout');
+      sendMessageLogin();
     });
   }
 
@@ -280,4 +269,24 @@ $(function() {
       getTranslations();
     }
   });
+
+  function sendMessageLogin(data) {
+
+    chrome.runtime.sendMessage({
+      msg: 'LOGIN',
+      data: data
+    });
+  }
+
+  function getSettings(callback, data) {
+    chrome.runtime.sendMessage({
+      msg: 'SETTINGS_REQUEST',
+      data: data
+    }, resp => {
+      settings = resp;
+      if (callback) {
+        callback();
+      }
+    });
+  }
 });

@@ -1,6 +1,6 @@
 $(function() {
 /*---------------------------------------- EVENTS --------------------------------- */
-// CLEAR APP UI ON CLICK OUT
+// CLEAR APP UI ON CLICK OUT OFF APP
 // DETECT SELECTED TEXT END SHOW BTN
 /*----------------------------------------------------------------------------------- */
 
@@ -21,14 +21,13 @@ $(function() {
 let settings = {
   isAuth: false
 }
-let updateTimer;
 let translate = {};
 let memorizingApp = document.createElement('div');
 createShadowRoot();
 
 
 /*---------------------------------------- EVENTS --------------------------------- */
-  /* CLEAR APP UI ON CLICK OUT */
+  /* CLEAR APP UI ON CLICK OUT OFF APP */
   $('body').on('mousedown', (e) => {
     if ($(e.target).closest('.memorizing-popup-btn, .memorizing-popup').length || $(e.target).is('#memorizingApp')) {
       return;
@@ -257,7 +256,6 @@ createShadowRoot();
     }
     if (popup) {
       popup.remove();
-      clearInterval(updateTimer);
     }
   }
 
@@ -293,7 +291,6 @@ createShadowRoot();
     chrome.runtime.sendMessage({
       msg: 'SETTINGS_REQUEST'
     }, resp => {
-      console.log(resp);
       settings = {...resp};
       if (callback) {
         callback();
