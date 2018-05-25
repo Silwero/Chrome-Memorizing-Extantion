@@ -11,6 +11,7 @@ $(function() {
   let settings = {
     isAuth: false
   }
+  let currentTranslate = {};
   let updateTimer;
   const spinner = $('<div class="lds-ring"><div></div><div></div><div></div><div></div></div>');
 
@@ -87,6 +88,135 @@ $(function() {
     $('.result').append(table);
   }
 
+/*--------------------CREATE GOTED TRANSLATION TABLE------------------------*/
+  /* TRANSLATE WORD */
+  $('body').on('click', '.translate-text-btn', (e) => {
+    e.preventDefault();
+    const lang = 'auto';
+    const lang2 = 'ru';
+
+    const text = $('#translate-text').val();
+
+    if (!text) return;
+
+    $.ajax({
+      type: 'POST',
+      url: 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=' + lang + '&tl=' + lang2 + '&hl=ru&dt=t&dt=bd&dj=1&q=' + text,
+      success: resp => {
+        currentTranslate = {...resp};
+        createTranslate(currentTranslate);
+      },
+      error: err => {
+        console.log(err);
+        alert('Error: More info in console!')
+      }
+    });
+  });
+
+  /* CREATE GOTED TRANSLATION TABLE */
+  function createTranslate(translate) {
+    const parent = $('.translate-result');
+    clearTranslation();
+    currentTranslate = translate;
+
+
+    const text = {
+      header: 'Translation',
+      btnText: 'Save translate'
+    }
+
+    // translate header
+    const header = $('<h2>').text(text.header);
+    // translate save btn
+    const btn = $('<button class="btn save-btn">' + text.btnText + '</button>');
+    btn.on('click', e => {
+      saveTranslation();
+    });
+
+    // translation table
+    const translateTable = $('<table class="translate-result-table"></table>');
+    let lang = '';
+    switch(translate.src) {
+      case 'ru':
+        lang = 'Russian';
+        break;
+      case 'en':
+        lang = 'English';
+        break;
+      default:
+        lang = translate.src;
+    }
+    translateTable.append('<tr>' +
+        '<th colspan="2"> Source language ' + lang +'</tr>');
+    translateTable.append('<tr>' +
+        '<td>' + translate.sentences[0].orig + '</td>' +
+        '<td class="current-translate">' + translate.sentences[0].trans + '</td>' +
+     +'</tr>');
+
+    let dictionaryToggle = null;
+    // dictionary table
+    let dictTable = null;
+    if (translate.dict) {
+      dictionaryToggle = $('<div class="toggle-dictionary">').text('Other variants');
+      dictTable = $('<table class="dict-table"></table>');
+      dictTable.append('<tr><th colspan="2">Other variants</th></tr>');
+      if (settings.isAuth) {
+        translate.dict.forEach((el, dictNum) => {
+          let dict = el.terms.map((el, arrNum) => {
+            return '<span data-arr-number="' + arrNum + '" data-dict-number="' + dictNum + '" class="change-translation">' + el + '</span>';
+          });
+          dictTable.append('<tr>'+
+              '<td>' + el.pos +'</td>' +
+              '<td>' + dict.join(', ') +'</td>' +
+            +'</tr>');
+        });
+      } else {
+        translate.dict.forEach((el, dictNum) => {
+          dictTable.append('<tr>'+
+              '<td>' + el.pos +'</td>' +
+              '<td>' + el.terms.join(', ') +'</td>' +
+            +'</tr>');
+        });
+      }
+      }
+
+      parent.append(header);
+      // parent.append(select);
+      parent.append(translateTable);
+      parent.append(dictionaryToggle);
+      parent.append(dictTable);
+      if (settings.isAuth) {
+        $('#translate .btn-wrapper').append(btn);
+      }
+  }
+
+  /* TOGGLE VARIANTS */
+  $('body').on('click', '.toggle-dictionary', e => {
+    $(e.target).toggleClass('active');
+    $('.dict-table').toggle();
+  });
+
+  /* SAVE TRANSLATE */
+  $('body').on('click', '.save-btn', e => {
+    e.preventDefault();
+    $(e.target).attr('disabled', 'disabled');
+  });
+
+  /* CLEAR TRANSLATION */
+  $('.clear-translation-input').on('click', e => {
+    e.preventDefault();
+
+    $(e.target).prev().val('');
+    clearTranslation();
+  });
+
+  /* CLEAR CURRENT TRANSLATION */
+  function clearTranslation() {
+    $('.translate-result').empty();
+    $('.save-btn').remove();
+    currentTranslate = {};
+  }
+
 /*--------------------SHOW DICTIONARY------------------------*/
   function showDictionary(target) {
     if (!target.parent().find('.showed').length) {
@@ -117,26 +247,20 @@ $(function() {
     const nav = $('.navigation ul');
     nav.html('');
 
-    // nav.append('<li class="nav-link translate">Translate</li>');
+    nav.append('<li class="nav-link translate" data-target="#translate">Translate</li>');
     if (settings.isAuth) {
       nav.append(
         '<li class="nav-link words-list" data-target="#results">My Words</li>' +
         '<li class="logout">Logout</li>'
       )
     } else {
-      nav.prepend('<li class="nav-link auth" data-target="#auth-form">Authentication</li>');
+      nav.append('<li class="nav-link auth" data-target="#auth-form">Authentication</li>');
     }
 
     $('.nav-link.active').removeClass('active');
     $('.active-tab').removeClass('active-tab');
-
-    if (settings.isAuth) {
-      $('.words-list').addClass('active');
-      $('#results').addClass('active-tab');
-    } else {
-      $('.auth').addClass('active');
-      $('#auth-form').addClass('active-tab');
-    }
+    $('.translate').addClass('active');
+    $('#translate').addClass('active-tab');
   }
 
   /* NAVIGATION FUNCTION */
@@ -191,6 +315,7 @@ $(function() {
         $('.auth-form .lds-ring').remove();
         saveUser(result);
         setMessage(messageSuccess);
+        clearTranslation();
         $('#login').val('');
       },
       error: (err) => {
@@ -255,11 +380,11 @@ $(function() {
   /* LOGOUt */
   function logout() {
     $('body').on('click', '.logout', (e) => {
-
       localStorage.removeItem('userInfo');
       chrome.storage.local.clear();
       getSettings(createNav, 'logout');
       sendMessageLogin();
+      clearTranslation();
     });
   }
 
@@ -289,4 +414,36 @@ $(function() {
       }
     });
   }
+
+/*------------------------- SAVE TRANSLATION ---------------------------*/
+  function saveTranslation() {
+    currentTranslate.userId = settings.userInfo.localId;
+
+    $.ajax({
+      type: 'POST',
+      url: 'https://memorizing-bc6a4.firebaseio.com/words.json',
+      contentType: "application/json",
+      data: JSON.stringify(currentTranslate),
+      success: resp => {
+        chrome.runtime.sendMessage({
+          msg: 'WORD_SAVED',
+          name: resp.name,
+          data: currentTranslate
+        });
+        $('#translate-text').val('');
+        clearTranslation();
+        setMessage('Saved!')
+      },
+      error: err => {
+        console.log(err);
+        alert('Not saved! More info in console.');
+      }
+    });
+  }
+
+  $('body').on('click', '.change-translation', e => {
+    const newVal = $(e.target).text();
+    $('.current-translate').text(newVal);
+    currentTranslate.sentences[0].trans = newVal;
+  });
 });

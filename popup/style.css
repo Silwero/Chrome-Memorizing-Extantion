@@ -6,13 +6,133 @@ body {
   min-width: 650px;
   text-align: center;
   margin: 0;
-  font-family: 'Open Sans';
+  font-family: 'Arial';
   background: #000;
   color: #fff;
-  padding: 15px 50px;
   font-size: 16px;
-  max-height: 300px;
+  padding: 0;
 }
+
+.content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.content::-webkit-scrollbar-track {
+  background: #000;
+  -webkit-box-shadow: -2px 0 6px rgba(255,255,255,.3);
+}
+
+.content::-webkit-scrollbar-thumb {
+  background-color: #40ff05;
+  outline: 1px solid slategrey;
+  border-radius: 5px;
+}
+
+.translate-result {
+  margin: 0 -120px;
+}
+
+.translate-result h2 {
+  font-size: 20px;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.translate-result table {
+  table-layout: fixed;
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.translate-result table th {
+  vertical-align: top;
+  border: 1px solid #fff;
+  padding: 5px 15px;
+  text-align: center;
+  background: #fff;
+  color: #000;
+  font-weight: 400;
+}
+
+.translate-result table td {
+  vertical-align: top;
+  border: 1px solid #fff;
+  padding: 5px 15px;
+  text-align: left;
+}
+
+.dict-table {
+  display: none;
+}
+
+.toggle-dictionary {
+  cursor: pointer;
+  margin-bottom: 30px;
+  color: #40ff05;
+  text-align: center;
+}
+
+.input-with-btn {
+  position: relative;
+}
+
+.input-with-btn input {
+  padding-right: 30px;
+}
+
+.input-with-btn .clear-translation-input {
+  visibility: hidden;
+  opacity: 0;
+  transition: all .3s;
+}
+
+.input-with-btn:hover .clear-translation-input {
+  opacity: 1;
+  visibility: visible;
+}
+
+.change-translation {
+  cursor: pointer;
+}
+
+.change-translation:hover {
+  text-decoration: underline;
+}
+
+.clear-translation-input {
+  position: absolute;
+  cursor: pointer;
+  right: 5px;
+  padding: 7px 7px 9px;
+  top: 50%;
+  transform:  translateY(-50%);
+  transition: all .3s;
+  color: #40ff05;
+  font-size: 15px;
+}
+
+.clear-translation-input:hover {
+  color: #bf0000;
+}
+
+.toggle-dictionary:hover {
+  text-decoration: underline;
+}
+
+.translate-result table td,
+.translate-result table th {
+  padding: 5px 10px;
+}
+
+.content {
+  max-height: 600px;
+  overflow-y: auto;
+  padding: 15px 50px;
+}
+
 button {
   cursor: pointer;
   outline: none !important;
@@ -147,6 +267,16 @@ h1 img {
   position: relative;
 }
 
+.btn-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.btn {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
 .auth-form input:disabled,
 .auth-form .btn:disabled {
   opacity: .4;
@@ -249,6 +379,13 @@ a:hover {
 .error {
   background: #bf0000;
   color: #fff;
+}
+
+.translate-word {
+  padding-top: 30px;
+  max-width: 360px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ------------------- SPINNER --------------------- */

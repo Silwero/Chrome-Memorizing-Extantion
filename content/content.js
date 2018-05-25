@@ -149,9 +149,8 @@ createShadowRoot();
     clearMemorizingElements();
     getSettings(() => {
 
-      // set timer to check login
       const text = {
-        header: 'Translate',
+        header: 'Translation',
         btnText: 'Save translate'
       }
 

@@ -152,6 +152,7 @@
       chrome.storage.local.get(['memorizing'], function(result) {
         const newMemorizing = {...result.memorizing}
         newMemorizing[request.name] = {...request.data};
+        console.log(newMemorizing);
         setStoreage(newMemorizing);
       });
     }
