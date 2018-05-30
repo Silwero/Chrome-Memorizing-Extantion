@@ -88,7 +88,7 @@ $(function() {
     $('.result').append(table);
   }
 
-/*--------------------CREATE GOTED TRANSLATION TABLE------------------------*/
+/*--------------------CREATE RESULT TABLE------------------------*/
   /* TRANSLATE WORD */
   $('body').on('click', '.translate-text-btn', (e) => {
     e.preventDefault();
